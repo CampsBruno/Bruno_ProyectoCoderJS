@@ -1,0 +1,32 @@
+.darkmode{
+    color: white;
+    background-color: black;
+}
+
+
+.darkmode .modal-title {
+    color: black;
+}
+
+.darkmode .form-label2{
+    color: black;
+}
+
+
+.Tabla_redonda th{
+    background-color:rgb(150, 135, 135);
+}
+
+
+.Tabla_redonda2 {
+    background-color:rgb(150, 135, 135);
+    border-radius: 5px;
+}
+
+
+.transparent-input {
+    border: none;
+    background: none;
+    font-weight: bold;
+    color: black;
+}
