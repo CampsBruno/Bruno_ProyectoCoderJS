@@ -503,7 +503,7 @@ function HistorialGuardado() {
 
     const cell3 = headerRow.insertCell(2)
     cell3.className = 'centered'
-    cell3.innerHTML = '<b>Puso</b>'
+    cell3.innerHTML = '<b>Categoria</b>'
     cell3.style.backgroundColor = 'rgb(150, 135, 135)'
 
     const cell4 = headerRow.insertCell(3)
@@ -531,11 +531,15 @@ function HistorialGuardado() {
         bodyCell2.innerHTML = Datos_Almacenados.descripcion
          }else {
           const bodyCell2 = bodyRow.insertCell(1)
-        bodyCell2.innerHTML = "Otros"
+        bodyCell2.innerHTML = "-"
          }
+
+
         const bodyCell3 = bodyRow.insertCell(2)
-        bodyCell3.innerHTML = Datos_Almacenados.por_Persona
-        
+        if (Datos_Almacenados.Categoria!=""){
+        bodyCell3.innerHTML = Datos_Almacenados.Categoria}else{
+          bodyCell3.innerHTML = "Otros" 
+        }        
         for(let estadodelospagos of Datos_Almacenados.Detalles){
           let ToFloat_EstadoPagos = parseFloat(estadodelospagos["EstadoActual"])
           
