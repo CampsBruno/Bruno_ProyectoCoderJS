@@ -21,7 +21,7 @@ let contraseña=""
 let Secion_iniciada= false
 let Deudor_final={}
 let PagoRealizadoFinal=[]
-
+let datosdeSesionAlmacenados=[]
 let Apagar_cada_uno=""
 let Detalles= []
 let logoTexto=""
@@ -29,11 +29,8 @@ let logoTexto=""
 const diccionario={}
 
 
-function borra_despues(p){
-  if(p)
-  {console.log(p)}
-  console.log("funciona")
-}
+
+//############################################################################         CLASE PERSONA       #############################################################################################################################################################################
 
 
 
@@ -112,11 +109,11 @@ return valorespersona
 
 
 
-//###############################  Funciones  ##########################################
+//###############################                                                 FUNCIONES               ##########################################
 
 
 
-
+//                     FUNCIONES DE lOGUEO Y CREACION DE USUARIOS
 
 
 function crear_usuario() {   // creamos el usuario si no existe
@@ -141,7 +138,7 @@ function crear_usuario() {   // creamos el usuario si no existe
   }
   
 
-function iniciar_sesion(){
+function iniciar_sesion(){   // INICIAMOS SESION 
     contraseña= document.getElementById("password").value
     usuario=document.getElementById("username").value
     const usuariosGuardados = localStorage.getItem("usuarios");
@@ -154,7 +151,6 @@ function iniciar_sesion(){
             const iniciado = document.getElementById("iniciado")
             iniciado.innerHTML = ""
             iniciado.innerHTML += `<p> Bienvenido <b>${usuario}</b></p>`
-             console.log(usuario)
             Swal.fire("Inicio de sesión exitoso.")
             Secion_iniciada= true
             document.getElementById("password").value=""
@@ -180,25 +176,25 @@ function iniciar_sesion(){
 
 
 // ###############################################################################################################################
-function Agregar_personas() {
+
+function Agregar_personas() {    // AGREGA TANTO LA PERSONA COMO LA PLATA  Y LUEGO VA AGREGANDO A LA TABLA 
   
   let Nombre = document.getElementById("name").value;
-  let Guitarra_puesta = parseFloat(document.getElementById("Guitarra_puesta").value);
-  console.log(`Nombre: ${Nombre}, Monto: ${Guitarra_puesta}`)  // Poner en la pantalla
+  let Guitarra_puesta = parseFloat(document.getElementById("Guitarra_puesta").value)
   if (!Nombre || isNaN(Guitarra_puesta) || Guitarra_puesta < 0) {
-      alert("Ingresa un nombre válido y una cantidad válida.");
-      return;
+      alert("Ingresa un nombre válido y una cantidad válida.")
+      return
   } else {
-      const existePersona = personas.filter(persona => persona.nombre === Nombre);
+      const existePersona = personas.filter(persona => persona.nombre === Nombre)
       if (existePersona.length > 0) {
-          alert("Ya existe una persona con ese nombre.");
-          return;
+          alert("Ya existe una persona con ese nombre.")
+          return
       }
-      let nuevaPersona = new Persona(Nombre, Guitarra_puesta);
-      personas.push(nuevaPersona);
-      document.getElementById("name").value = "";
-      document.getElementById("Guitarra_puesta").value = "";
-      renderizarTabla();
+      let nuevaPersona = new Persona(Nombre, Guitarra_puesta)
+      personas.push(nuevaPersona)
+      document.getElementById("name").value = ""
+      document.getElementById("Guitarra_puesta").value = ""
+      renderizarTabla()
   }
   
 
@@ -208,12 +204,9 @@ function Agregar_personas() {
 function confirmarCambios() {     // se ejecuta con el nuevo boton al final al final de la tabla renderizada
 IngresoMontoyPersonas() 
 cantidad_gente=personas.length
-console.log(` Cantidad e gente es ${cantidad_gente}`)
 
-console.log(personas);
 Apagar_cada_uno = calcularCuantoGastoCadaUno(personas);
 Apagar_cada_uno = (Apagar_cada_uno / cantidad_gente).toFixed(2);
-console.log(` a pagar cada uno es de  ${Apagar_cada_uno}`)
 
 document.getElementById("porPersona").innerHTML = `<p>Lo que cada uno tiene que pagar por <b> ${descripcion} </b> es: <b> ${Apagar_cada_uno}$ </b></p>`;
 for (let persona of personas) {
@@ -268,7 +261,7 @@ function calcularCuantoGastoCadaUno(personas) {  // calcula cuanto debe poner ca
     let totalGastado = 0;
     for (let persona of personas) {
         totalGastado += persona.plata}
-        console.log(` este es el total gastado ${totalGastado}`)
+        
 return totalGastado
 }
 
@@ -288,6 +281,23 @@ logoTexto = enlace.text
 
 
 }
+
+
+
+function  Correcta_distribucion(parametro){
+    let deudores = {}
+    let Pusieron_de_mas = {}
+    for (let persona of parametro) {   
+        (persona.plata >= 0) ? Pusieron_de_mas[persona.nombre] = persona.plata : deudores[persona.nombre] = persona.plata;}   
+    Deudas_pasar=Muestra_Tabla(deudores,Pusieron_de_mas)
+  return  Deudas_pasar
+}
+
+
+
+
+//########################################################################   TABLAS
+
 
 
 function Muestra_Tabla(Deben,Reciben){    // crea la tabla con las personas que deben
@@ -311,7 +321,6 @@ function Muestra_Tabla(Deben,Reciben){    // crea la tabla con las personas que 
         Reciben[pagador] -= cantidad_a_transferir
         retornar_valor.push({"Debe":deudor.toLocaleLowerCase(),"Cuanto":cantidad_a_transferir.toFixed(2),"A_Quien":pagador.toLocaleLowerCase()})
 
-        console.log(`${deudor.toUpperCase()} Le tiene que Girar ${cantidad_a_transferir.toFixed(2)} $ a ${pagador.toUpperCase()}`)
         //const resultado = `${deudor.toUpperCase()} Le tiene que Girar ${cantidad_a_transferir.toFixed(2)} $ a ${pagador.toUpperCase()}`
         resultadosDiv.innerHTML += `<tr> 
                                           <th id="deudor${indice}">${deudor.toUpperCase()}</th>
@@ -333,14 +342,7 @@ resultadosDiv.innerHTML +=`                          <div class="gap-3 py-3">
 return retornar_valor
 }
 
-function  Correcta_distribucion(parametro){
-    let deudores = {}
-    let Pusieron_de_mas = {}
-    for (let persona of parametro) {   
-        (persona.plata >= 0) ? Pusieron_de_mas[persona.nombre] = persona.plata : deudores[persona.nombre] = persona.plata;}   
-    Deudas_pasar=Muestra_Tabla(deudores,Pusieron_de_mas)
-  return  Deudas_pasar
-}
+
 
 
 function renderizarTabla() {                            // creamos la tabla en el momento que vmaos poniendo cada persona
@@ -461,14 +463,167 @@ document.getElementById("iconoSeleccionado").innerHTML=""
 }
 
 
+
+
+
+function HistorialGuardado() {
+  
+  console.log("funciona")
+  if (Secion_iniciada == true) {
+    const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios"))
+    for (let cuenta of usuariosGuardados) {
+      if (cuenta.usuario == usuario) {
+        id_obtenido = parseInt(cuenta.id_usuario)
+        
+      }
+    }
+
+    datosTotales = JSON.parse(localStorage.getItem("almacenaje"))
+
+    // Limpia el contenido anterior
+    const tablaContainer = document.getElementById('tablaContainer')
+    tablaContainer.innerHTML = ''
+
+    // Crear la tabla
+    const table = document.createElement('table')
+    table.className = 'table table-striped'
+
+    const thead = document.createElement('thead')
+    const headerRow = thead.insertRow(0)
+
+    const cell1 = headerRow.insertCell(0)
+    cell1.className = 'centered'
+    cell1.innerHTML = '<b>Fecha</b>'
+    cell1.style.backgroundColor = 'rgb(150, 135, 135)'
+
+    const cell2 = headerRow.insertCell(1)
+    cell2.className = 'centered'
+    cell2.innerHTML = '<b>Descripcion</b>'
+    cell2.style.backgroundColor = 'rgb(150, 135, 135)'
+
+    const cell3 = headerRow.insertCell(2)
+    cell3.className = 'centered'
+    cell3.innerHTML = '<b>Puso</b>'
+    cell3.style.backgroundColor = 'rgb(150, 135, 135)'
+
+    const cell4 = headerRow.insertCell(3)
+    cell4.className = 'centered'
+    cell4.innerHTML = '<b>Estado Actual</b>'
+    cell4.style.backgroundColor = 'rgb(150, 135, 135)'
+
+    const cell5 = headerRow.insertCell(4)
+    cell5.className = 'centered'
+    cell5.innerHTML = '<b>Historial</b>'
+    cell5.style.backgroundColor = 'rgb(150, 135, 135)'
+
+    const tbody = document.createElement('tbody')
+    
+    // Agregar filas a la tabla
+    for (Datos_Almacenados of datosTotales) {
+      let EstadoDelosPagosPaaHistorial = true
+      if (Datos_Almacenados["id"] == id_obtenido) {
+        datosdeSesionAlmacenados.push(Datos_Almacenados)
+        const bodyRow = tbody.insertRow()
+        const bodyCell1 = bodyRow.insertCell(0)
+        bodyCell1.innerHTML = Datos_Almacenados.fecha
+        if(Datos_Almacenados.descripcion!= ""){
+        const bodyCell2 = bodyRow.insertCell(1)
+        bodyCell2.innerHTML = Datos_Almacenados.descripcion
+         }else {
+          const bodyCell2 = bodyRow.insertCell(1)
+        bodyCell2.innerHTML = "Otros"
+         }
+        const bodyCell3 = bodyRow.insertCell(2)
+        bodyCell3.innerHTML = Datos_Almacenados.por_Persona
+        
+        for(let estadodelospagos of Datos_Almacenados.Detalles){
+          let ToFloat_EstadoPagos = parseFloat(estadodelospagos["EstadoActual"])
+          
+          if (ToFloat_EstadoPagos!== 0.0){
+                EstadoDelosPagosPaaHistorial = false
+                
+            break
+          }}
+
+          const bodyCell4 = bodyRow.insertCell(3)
+         if (EstadoDelosPagosPaaHistorial){
+         
+         bodyCell4.innerHTML = "Completado"}else 
+         {
+         bodyCell4.innerHTML = `<b>Incompleto</b>`
+         }
+
+         
+        const bodyCell5 = bodyRow.insertCell(4)
+        //const button = createDetailButton(Datos_Almacenados.Historial);
+        bodyCell5.innerHTML = `
+        <button class="btn btn-success" id="Numero-${datosdeSesionAlmacenados.length-1}" onclick="DetallesDeudas(this)">Detalles</button>
+    `
+    
+      
+      }
+    }
+
+    // Añadir la tabla al contenedor
+    table.appendChild(thead)
+    table.appendChild(tbody)
+    tablaContainer.appendChild(table)
+  }
+}
+
+//################################################    CARTEL CON LOS DETALLES 
+function mostrarInformacion(data) {
+  const dolar = data.PrecioDolar;
+  let contenido = `<p><strong>Descripción:</strong> ${data.descripcion}</p>
+                  <p><strong>Categoría:</strong> ${data.Categoria}</p>
+                  <p><strong>Fecha:</strong> ${data.fecha}</p>
+                  <p><strong>Por Persona:</strong> ${data.por_Persona}</p>`;
+
+  contenido += "<h3>Deudas Pendientes:</h3>";
+  for (let detalle of data.Detalles) {
+    const estadoActual = parseFloat(detalle.EstadoActual);
+    if (estadoActual < 0) {
+      const deudaEnPesos = `${-estadoActual} $`;
+      const deudaEnDolares = `${(deudaEnPesos / dolar).toFixed(1)} $`;
+      contenido += `<p><strong>Nombre:</strong> ${detalle.nombre}</p>
+                    <p><strong>Debe a:</strong> ${data.id}</p>
+                    <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos}</p>
+                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares}</p>`;
+    }
+  }
+
+  Swal.fire({
+    title: 'Información Detallada',
+    html: contenido,
+    confirmButtonText: 'OK'
+  });
+}
+
+
+//#######################################################################################################################################################################################################################################
+
+function createDetailButton(details) {      //######    CREAMOS BOTON DE DETALLES
+  const button = document.createElement('button')
+  button.innerHTML = 'Ver Detalles'
+
+  button.onclick = function () {
+      alert(JSON.stringify(details, null, 2)) 
+  };
+
+  return button.outerHTML
+}
+//////////////////////////////////
+
 // ##############################   Funciones de borrar y editar de la tabla
+
+
+
 function borrar(parametro, listadeObjetos) {                        //boton de borrar el dato seleccionado
   let row = parametro.parentNode.parentNode
   let index = row.rowIndex - 1
 
   if (index >= 0 && index < listadeObjetos.length) {
       let nombrePersona = listadeObjetos[index].nombre
-      console.log("Nombre de la persona a eliminar:", nombrePersona)
       listadeObjetos.splice(index, 1)
 
       renderizarTabla()
@@ -491,13 +646,18 @@ function editar(parametro, listadeObjetos) {                            // boton
 
       listadeObjetos[index].nombre = nombrePersona
       listadeObjetos[index].plata = parseFloat(plataPersona)
-      console.log(listadeObjetos)
       renderizarTabla() // Volver a renderizar la tabla después de editar los valores
   }
 }
 
 
 
+function DetallesDeudas(elemento) {            // OBTENGO LOS DETALLES DEL GASTO SELECCIONADO
+  const id = elemento.id.split("-")[1]
+  console.log(datosdeSesionAlmacenados[id]) //" con esto trabajo"
+  mostrarInformacion(datosdeSesionAlmacenados[id])
+  
+}
 
 
 
@@ -531,7 +691,7 @@ async function consultar_precio(){      // consulta el precio del dolar blue al 
 
 
 
-// ###############   events
+// ###############                                  EVENTOS
 
 
 
@@ -549,10 +709,8 @@ document.addEventListener("click", (chequeo)=> {                     // cambia e
 
 
 function ExportarDatos(lista, ID_Usuario,descripcion,Gasto_Cada_Persona,logoGuardar){
-  console.log(`Estos son todos los datos que voy a agregar ID ${ID_Usuario}  descripcion ${descripcion}, Categoria${logoGuardar}, fecha ${"Hoy"}, por persona ${Apagar_cada_uno} `)
   //crear la variable local si no existe
   if(!localStorage.getItem("almacenaje")){
-    console.log("entro a no existe alamacenaje")
     localStorage.setItem("almacenaje",JSON.stringify(lista))
   } else { 
     const fechaActual = new Date();
@@ -584,7 +742,7 @@ function ValidarPagos(){    //Hace efectivos los pagos y luego almacena lso valo
   Deudor_final=[]
   let tabla22=document.getElementById("tablaP")
   let fff= tabla22.getElementsByTagName("tr").length
-  let Pagos_Validados
+ 
   for(let i=0 ;i<fff;i++){
     let checkbox = document.getElementById(`Boton${i+1}`)
     if (checkbox.checked) {
@@ -592,31 +750,28 @@ function ValidarPagos(){    //Hace efectivos los pagos y luego almacena lso valo
     } else {
       Deudor_final.push(Deuda_copia[i])
     }}
-    console.log(PagoRealizadoFinal)
 
-    console.log(Deudor_final)
   
     
 for(let personaii of personas ){
  let ddetalle =personaii.EstadoFinanciero(Deudor_final,PagoRealizadoFinal)   //almacena el estado funanciero de cada sujeto
 
  Detalles.push(ddetalle)}
-console.log(`dETALLES SON ${Detalles}`)
 if (usuario){
   const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios"))  // busco id si esta asocicado
   for (let cuenta of usuariosGuardados ){
     if(cuenta.usuario == usuario){
   id_obtenido = parseInt(cuenta.id_usuario)
-  console.log(Apagar_cada_uno)
   ExportarDatos(Detalles,id_obtenido,descripcion,Apagar_cada_uno,logoTexto)
   
   
   }}}
+  console.log(Deudor_final)
+  console.log(personas)
+  
+  console.log(Detalles)
   renderizarTablaModificada(personas,Deudor_final)
   RemoverTablas_Alfinal()
 }
   
- 
-
-
 
