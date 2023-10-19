@@ -398,59 +398,59 @@ function renderizarTabla() {                            // creamos la tabla en e
 
 
 function renderizarTablaModificada(personas, listaDeudas) {   //tabla al finalizar
-  const tablaContainer = document.getElementById('tablaContainer');
-  tablaContainer.innerHTML = '';
+  const tablaContainer = document.getElementById('tablaContainer')
+  tablaContainer.innerHTML = ''
 
-  const table = document.createElement('table');
-  table.className = 'table table-striped';
+  const table = document.createElement('table')
+  table.className = 'table table-striped'
 
-  const header = table.createTHead();
-  const row = header.insertRow(0);
+  const header = table.createTHead()
+  const row = header.insertRow(0)
 
-  const cell1 = row.insertCell(0);
-  cell1.className = 'centered';
-  cell1.innerHTML = '<b>Nombre</b>';
-  cell1.style.backgroundColor = 'rgb(150, 135, 135)';
+  const cell1 = row.insertCell(0)
+  cell1.className = 'centered'
+  cell1.innerHTML = '<b>Nombre</b>'
+  cell1.style.backgroundColor = 'rgb(150, 135, 135)'
 
-  const cell2 = row.insertCell(1);
-  cell2.className = 'centered';
-  cell2.innerHTML = '<b>Deuda</b>';
-  cell2.style.backgroundColor = 'rgb(150, 135, 135)';
+  const cell2 = row.insertCell(1)
+  cell2.className = 'centered'
+  cell2.innerHTML = '<b>Deuda</b>'
+  cell2.style.backgroundColor = 'rgb(150, 135, 135)'
 
-  const cell3 = row.insertCell(2);
-  cell3.className = 'centered';
-  cell3.innerHTML = '<b>A Quien Debe</b>';
-  cell3.style.backgroundColor = 'rgb(150, 135, 135)';
+  const cell3 = row.insertCell(2)
+  cell3.className = 'centered'
+  cell3.innerHTML = '<b>A Quien Debe</b>'
+  cell3.style.backgroundColor = 'rgb(150, 135, 135)'
 
   const body = table.createTBody(); // cuerpo de la tabla
   personas.forEach((persona, index) => {
     let deudas = listaDeudas.filter(item => item.Debe === persona.nombre);
     if (deudas.length > 0) {
       deudas.forEach((deuda) => {
-        const row = body.insertRow(-1);
-        const cell1 = row.insertCell(0);
+        const row = body.insertRow(-1)
+        const cell1 = row.insertCell(0)
         cell1.innerHTML = `<input type="text" value="${persona.nombre}" id="nombre-${index}" class="form-control transparent-input"/>`;
 
         const cell2 = row.insertCell(1);
-        cell2.innerHTML = `<b>${deuda.Cuanto}</b>`;
+        cell2.innerHTML = `<b>${deuda.Cuanto}</b>`
 
         const cell3 = row.insertCell(2);
-        cell3.innerHTML = `<b>${deuda.A_Quien}</b>`;
+        cell3.innerHTML = `<b>${deuda.A_Quien}</b>`
       });
     } else {
-      const row = body.insertRow(-1);
-      const cell1 = row.insertCell(0);
+      const row = body.insertRow(-1)
+      const cell1 = row.insertCell(0)
       cell1.innerHTML = `<input type="text" value="${persona.nombre}" id="nombre-${index}" class="form-control transparent-input"/>`;
 
-      const cell2 = row.insertCell(1);
-      cell2.innerHTML = 'Saldado';
+      const cell2 = row.insertCell(1)
+      cell2.innerHTML = 'Saldado'
 
-      const cell3 = row.insertCell(2);
-      cell3.innerHTML = 'Sin Deuda';
-    }
-  });
+      const cell3 = row.insertCell(2)
+      cell3.innerHTML = 'Sin Deuda'
+    
+}});
 
-  tablaContainer.appendChild(table);
+  tablaContainer.appendChild(table)
 }
 
 
@@ -572,23 +572,26 @@ function HistorialGuardado() {
 }
 
 //################################################    CARTEL CON LOS DETALLES 
+
+
 function mostrarInformacion(data) {
-  const dolar = data.PrecioDolar;
+  const dolar = data.PrecioDolar
+  
   let contenido = `<p><strong>Descripción:</strong> ${data.descripcion}</p>
                   <p><strong>Categoría:</strong> ${data.Categoria}</p>
                   <p><strong>Fecha:</strong> ${data.fecha}</p>
-                  <p><strong>Por Persona:</strong> ${data.por_Persona}</p>`;
+                  <p><strong>Por Persona:</strong> ${data.por_Persona}</p>`
 
   contenido += "<h3>Deudas Pendientes:</h3>";
   for (let detalle of data.Detalles) {
     const estadoActual = parseFloat(detalle.EstadoActual);
     if (estadoActual < 0) {
-      const deudaEnPesos = `${-estadoActual} $`;
-      const deudaEnDolares = `${(deudaEnPesos / dolar).toFixed(1)} $`;
+      const deudaEnPesos = -estadoActual
+      const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
       contenido += `<p><strong>Nombre:</strong> ${detalle.nombre}</p>
                     <p><strong>Debe a:</strong> ${data.id}</p>
-                    <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos}</p>
-                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares}</p>`;
+                    <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos} $</p>
+                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares} $</p>`
     }
   }
 
@@ -596,7 +599,7 @@ function mostrarInformacion(data) {
     title: 'Información Detallada',
     html: contenido,
     confirmButtonText: 'OK'
-  });
+  })
 }
 
 
@@ -766,10 +769,7 @@ if (usuario){
   
   
   }}}
-  console.log(Deudor_final)
-  console.log(personas)
-  
-  console.log(Detalles)
+
   renderizarTablaModificada(personas,Deudor_final)
   RemoverTablas_Alfinal()
 }
