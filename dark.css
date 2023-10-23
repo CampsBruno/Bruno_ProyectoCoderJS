@@ -30,3 +30,7 @@
     font-weight: bold;
     color: black;
 }
+
+#DetallesModal .modal-body {
+    color: black;
+}

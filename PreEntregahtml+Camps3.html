@@ -17,6 +17,7 @@
         <div class="container-fluid">
           <a class="navbar-brand text-light"  href="#">Inicio</a>
           <a class="nav-link text-light" onclick="HistorialGuardado(this)" href="#">Historial</a>
+          
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -24,6 +25,7 @@
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
             <div class="navbar-nav ms-auto">  <!-- El ms-auto significa margin start(seria decirle margen a la izquierda)-->
+
               <a type="button" id="BotonDark"  class="nav-link active text-light" aria-current="page" href="#">DarkMode</a>
 
               <a class="nav-link text-light" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
@@ -173,10 +175,34 @@
                  </div>
 
      </div>   <!-- fin del container-->
+
+
+
+
+
      
-     <!-- Modal-->
+     <!-- Modal de detalles de compras-->
+
+     <div class="modal fade" id="DetallesModal"  tabindex="-1"  aria-labelledby="label_detalless" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="label_detalless"> Información Detallada</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+      <div class="modal-body">  <!-- de aca el cuerpo-->
+        <h1> pruebe nomas</h1>
+
+      </div>
+      
+          </div> <!-- div del Content--> 
+        </div>  <!-- div del dialogo-->
+     </div>
 
 
+
+<!-- Modal inbicio de secion-->
      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">

@@ -467,7 +467,10 @@ document.getElementById("iconoSeleccionado").innerHTML=""
 
 
 function HistorialGuardado() {
-  
+  if (Secion_iniciada==false){
+
+    Swal.fire("Inicia Sesión para poder ver tu Historial")
+  }
   console.log("funciona")
   if (Secion_iniciada == true) {
     const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios"))
@@ -586,7 +589,7 @@ function mostrarInformacion(data) {
                   <p><strong>Fecha:</strong> ${data.fecha}</p>
                   <p><strong>Por Persona:</strong> ${data.por_Persona}</p>`
 
-  contenido += "<h3>Deudas Pendientes:</h3>";
+  contenido += "<h3>Deudas Pendientes:</h3><hr>";
   for (let detalle of data.Detalles) {
     const estadoActual = parseFloat(detalle.EstadoActual);
     if (estadoActual < 0) {
@@ -595,15 +598,19 @@ function mostrarInformacion(data) {
       contenido += `<p><strong>Nombre:</strong> ${detalle.nombre}</p>
                     <p><strong>Debe a:</strong> ${data.id}</p>
                     <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos} $</p>
-                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares} $</p>`
+                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares} $</p>
+                    <hr>`
+                    
     }
   }
 
-  Swal.fire({
-    title: 'Información Detallada',
-    html: contenido,
-    confirmButtonText: 'OK'
-  })
+  
+  const modalBody = document.querySelector('#DetallesModal .modal-body');
+  modalBody.innerHTML = contenido;
+
+  
+  const myModal = new bootstrap.Modal(document.getElementById('DetallesModal'));
+  myModal.show();
 }
 
 
@@ -778,4 +785,6 @@ if (usuario){
   RemoverTablas_Alfinal()
 }
   
+
+
 
