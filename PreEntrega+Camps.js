@@ -592,7 +592,27 @@ function mostrarInformacion(data) {
   contenido += "<h3>Deudas Pendientes:</h3><hr>";
   for (let detalle of data.Detalles) {
     const estadoActual = parseFloat(detalle.EstadoActual);
+
     if (estadoActual < 0) {
+
+
+      if((detalle.Historial["Falta Pagar"]).length){
+          for(let MostrarDeuda of detalle.Historial["Falta Pagar"]){//for para imprimir deudas si tiene mas de una
+
+            const deudaEnPesos = MostrarDeuda[1]
+            const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
+            const MostrarAquienDebe =MostrarDeuda[0]
+          
+          
+                contenido += `<p><strong>Nombre:</strong> ${detalle.nombre}</p>
+                    <p><strong>Debe a:</strong> ${MostrarAquienDebe}</p>
+                    <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos} $</p>
+                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares} $</p>
+                    <hr>`
+          
+          } //  fin de   for para imprimir deudas si tiene mas de una
+      }  // fin del if hisstorial[falta pagar]
+      else{
       const deudaEnPesos = -estadoActual
       const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
       contenido += `<p><strong>Nombre:</strong> ${detalle.nombre}</p>
@@ -600,11 +620,11 @@ function mostrarInformacion(data) {
                     <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos} $</p>
                     <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares} $</p>
                     <hr>`
-                    
-    }
-  }
+                    }// cierre del if estadoactuual<0esto es del else
+                  }// cierre del if estadoactuual<0
+  }  // fin del for
 
-  
+  console.log(data.Detalles[3].Historial["Falta Pagar"])
   const modalBody = document.querySelector('#DetallesModal .modal-body');
   modalBody.innerHTML = contenido;
 
