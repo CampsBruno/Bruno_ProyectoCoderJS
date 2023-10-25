@@ -167,8 +167,9 @@ function iniciar_sesion(){   // INICIAMOS SESION
     } 
     if (Secion_iniciada) {
       
-      var closeButton = document.querySelector('.btn-close'); // selecciona el botón de cerrar
+      var closeButton = document.querySelector('#loginModal .btn-close'); // selecciona el botón de cerrar
       closeButton.click(); // esto debería cerrar el modal
+      
     }
   }
 
@@ -590,13 +591,14 @@ function mostrarInformacion(data) {
                   <p><strong>Por Persona:</strong> ${data.por_Persona}</p>`
 
   contenido += "<h3>Deudas Pendientes:</h3><hr>";
+  
   for (let detalle of data.Detalles) {
     const estadoActual = parseFloat(detalle.EstadoActual);
 
     if (estadoActual < 0) {
 
 
-      if((detalle.Historial["Falta Pagar"]).length){
+      if((detalle.Historial["Falta Pagar"]).length>1){
           for(let MostrarDeuda of detalle.Historial["Falta Pagar"]){//for para imprimir deudas si tiene mas de una
 
             const deudaEnPesos = MostrarDeuda[1]
@@ -604,27 +606,41 @@ function mostrarInformacion(data) {
             const MostrarAquienDebe =MostrarDeuda[0]
           
           
-                contenido += `<p><strong>Nombre:</strong> ${detalle.nombre}</p>
-                    <p><strong>Debe a:</strong> ${MostrarAquienDebe}</p>
-                    <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos} $</p>
-                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares} $</p>
-                    <hr>`
-          
+                contenido += `<div class="card border-secondary mb-3" style="max-width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title text-muted">Detalles de la Deuda</h5>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Nombre: ${detalle.nombre}</li>
+                    <li class="list-group-item">Debe a: ${MostrarAquienDebe}</li>
+                    <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
+                    <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
+                  </ul>
+                </div>
+              </div>`
+            
           } //  fin de   for para imprimir deudas si tiene mas de una
       }  // fin del if hisstorial[falta pagar]
       else{
       const deudaEnPesos = -estadoActual
       const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
-      contenido += `<p><strong>Nombre:</strong> ${detalle.nombre}</p>
-                    <p><strong>Debe a:</strong> ${data.id}</p>
-                    <p><strong>Deuda en Pesos:</strong> ${deudaEnPesos} $</p>
-                    <p><strong>Deuda en Dólares:</strong> ${deudaEnDolares} $</p>
-                    <hr>`
+      const MostrarAquienDebe =detalle.Historial["Falta Pagar"][0]
+      contenido += `<div class="card border-secondary mb-3" style="max-width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title text-muted">Detalles de la Deuda</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Nombre: ${detalle.nombre}</li>
+          <li class="list-group-item">Debe a: ${MostrarAquienDebe}</li>
+          <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
+          <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
+        </ul>
+      </div>
+    </div>
+    `
                     }// cierre del if estadoactuual<0esto es del else
                   }// cierre del if estadoactuual<0
   }  // fin del for
 
-  console.log(data.Detalles[3].Historial["Falta Pagar"])
+  
   const modalBody = document.querySelector('#DetallesModal .modal-body');
   modalBody.innerHTML = contenido;
 

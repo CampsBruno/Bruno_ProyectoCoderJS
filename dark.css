@@ -34,3 +34,19 @@
 #DetallesModal .modal-body {
     color: black;
 }
+
+.card {
+    border: 1px solid #6c757d; /* Color de borde gris */
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Sombra más suave */
+  }
+  
+  .card-title {
+    color: #6c757d; /* Color de título gris */
+  }
+  
+  .list-group-item {
+    background-color: #f8f9fa; /* Color de fondo más claro */
+  }
+  
+
