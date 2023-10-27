@@ -91,7 +91,7 @@ EstadoFinanciero(ListaQueDebe,ListaQuePago){  // de aca devuelcvo el diccionario
         for(let parametros of ListaQueDebe){
           if(this.nombre==parametros["A_Quien"]){
             let plataparaCuentas = parseFloat(parametros["Cuanto"])
-            FaltaRecibir.push(parametros["Debe"],plataparaCuentas)  }}
+            FaltaRecibir.push([parametros["Debe"],plataparaCuentas])  }}
             if (FaltaRecibir!= []){
           historail["Faltas Recibir"]=FaltaRecibir}}
         
@@ -579,19 +579,29 @@ function HistorialGuardado() {
   }
 }
 
-//################################################    CARTEL CON LOS DETALLES 
+//################################################    CARTEL CON LOS DETALLES en la seccion Historial
 
 
-function mostrarInformacion(data) {
+function mostrarInformacion(data) {    // crea el modal y muestra los detalles 
   const dolar = data.PrecioDolar
-  
+  let contenidoBoton=``
   let contenido = `<p><strong>Descripción:</strong> ${data.descripcion}</p>
                   <p><strong>Categoría:</strong> ${data.Categoria}</p>
                   <p><strong>Fecha:</strong> ${data.fecha}</p>
                   <p><strong>Por Persona:</strong> ${data.por_Persona}</p>`
 
-  contenido += "<h3>Deudas Pendientes:</h3><hr>";
+  contenido += "<hr>"
+  contenido+=`<p>
   
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Deudas Pendientes
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div id="Deudas_Detalladas" class="card card-body">
+    
+  </div>
+</div>`
   for (let detalle of data.Detalles) {
     const estadoActual = parseFloat(detalle.EstadoActual);
 
@@ -605,37 +615,36 @@ function mostrarInformacion(data) {
             const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
             const MostrarAquienDebe =MostrarDeuda[0]
           
-          
-                contenido += `<div class="card border-secondary mb-3" style="max-width: 18rem;">
-                <div class="card-body">
-                  <h5 class="card-title text-muted">Detalles de la Deuda</h5>
-                  <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Nombre: ${detalle.nombre}</li>
-                    <li class="list-group-item">Debe a: ${MostrarAquienDebe}</li>
-                    <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
-                    <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
-                  </ul>
-                </div>
-              </div>`
-            
+            contenidoBoton+= `<div class="card border-secondary mb-3" style="max-width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title text-muted">Detalles de la Deuda</h5>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Nombre: <b>${detalle.nombre} </b> </li>
+                  <li class="list-group-item">Debe a:<b> ${MostrarAquienDebe} </b></li>
+                  <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
+                  <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
+                </ul>
+              </div>
+            </div>`
           } //  fin de   for para imprimir deudas si tiene mas de una
       }  // fin del if hisstorial[falta pagar]
       else{
       const deudaEnPesos = -estadoActual
       const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
-      const MostrarAquienDebe =detalle.Historial["Falta Pagar"][0]
-      contenido += `<div class="card border-secondary mb-3" style="max-width: 18rem;">
-      <div class="card-body">
-        <h5 class="card-title text-muted">Detalles de la Deuda</h5>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">Nombre: ${detalle.nombre}</li>
-          <li class="list-group-item">Debe a: ${MostrarAquienDebe}</li>
-          <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
-          <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
-        </ul>
-      </div>
+      const MostrarAquienDebe =detalle.Historial["Falta Pagar"][0][0]
+      
+    contenidoBoton+=`<div class="card border-secondary mb-3" style="max-width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title text-muted">Detalles de la Deuda</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Nombre:<b> ${detalle.nombre}</b></li>
+        <li class="list-group-item">Debe a:<b> ${MostrarAquienDebe}</b></li>
+        <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
+        <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
+      </ul>
     </div>
-    `
+  </div>
+  `
                     }// cierre del if estadoactuual<0esto es del else
                   }// cierre del if estadoactuual<0
   }  // fin del for
@@ -644,10 +653,26 @@ function mostrarInformacion(data) {
   const modalBody = document.querySelector('#DetallesModal .modal-body');
   modalBody.innerHTML = contenido;
 
-  
-  const myModal = new bootstrap.Modal(document.getElementById('DetallesModal'));
-  myModal.show();
+  const AgregoenBotonExpandible =document.getElementById("Deudas_Detalladas")
+  if (contenidoBoton!=``){
+  AgregoenBotonExpandible.innerHTML = contenidoBoton
 }
+else {
+  AgregoenBotonExpandible.innerHTML = `No hay deudas Pendientes`
+}
+
+  const myModal = new bootstrap.Modal(document.getElementById('DetallesModal'))
+  myModal.show()
+  //sacar esto, que esta para ver si funciona
+  
+}
+
+
+
+
+
+
+
 
 
 //#######################################################################################################################################################################################################################################
