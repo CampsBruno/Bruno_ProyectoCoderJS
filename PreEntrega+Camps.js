@@ -582,7 +582,8 @@ function HistorialGuardado() {
 //################################################    CARTEL CON LOS DETALLES en la seccion Historial
 
 
-function mostrarInformacion(data) {    // crea el modal y muestra los detalles 
+function mostrarInformacion(data, identificador) {    // crea el modal y muestra los detalles 
+  id_editar = identificador  // usalo posterirormente para editar los valores de las deudas
   const dolar = data.PrecioDolar
   let contenidoBoton=``
   let contenido = `<p><strong>Descripción:</strong> ${data.descripcion}</p>
@@ -628,10 +629,13 @@ function mostrarInformacion(data) {    // crea el modal y muestra los detalles
             </div>`
           } //  fin de   for para imprimir deudas si tiene mas de una
       }  // fin del if hisstorial[falta pagar]
-      else{
+      else if((detalle.Historial["Falta Pagar"]).length==1){    // si el largo del ["Falta Pagar"] es igual a 1  imprimi los valores
       const deudaEnPesos = -estadoActual
       const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
-      const MostrarAquienDebe =detalle.Historial["Falta Pagar"][0][0]
+      
+        const MostrarAquienDebe = detalle.Historial["Falta Pagar"][0][0];
+        
+   
       
     contenidoBoton+=`<div class="card border-secondary mb-3" style="max-width: 18rem;">
     <div class="card-body">
@@ -664,12 +668,8 @@ else {
   const myModal = new bootstrap.Modal(document.getElementById('DetallesModal'))
   myModal.show()
   //sacar esto, que esta para ver si funciona
-  
+ 
 }
-
-
-
-
 
 
 
@@ -730,7 +730,7 @@ function editar(parametro, listadeObjetos) {                            // boton
 function DetallesDeudas(elemento) {            // OBTENGO LOS DETALLES DEL GASTO SELECCIONADO
   const id = elemento.id.split("-")[1]
   console.log(datosdeSesionAlmacenados[id]) //" con esto trabajo"
-  mostrarInformacion(datosdeSesionAlmacenados[id])
+  mostrarInformacion(datosdeSesionAlmacenados[id],id)                          // envio los datos de las deudas y el id para la edicion posterior
   
 }
 
