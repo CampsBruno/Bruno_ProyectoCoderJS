@@ -50,3 +50,16 @@
   }
   
 
+
+  .btn-custom-color {
+    background-color: #ff510088; 
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-custom-color:hover {
+    background-color: #ff5100;
+  }

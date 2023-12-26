@@ -15,7 +15,7 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand text-light"  href="#">Inicio</a>
+          <a class="navbar-brand text-light"  href="#" onclick="resetearValores()">Inicio</a>
           <a class="nav-link text-light" onclick="HistorialGuardado(this)" href="#">Historial</a>
           
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,7 +129,7 @@
                     
                     <div class="mb-3">
                         <div class="mb-3">
-                            <label for="Guitarra_puesta" class="form-label">Plata puesta:</label>
+                            <label for="Guitarra_puesta" class="form-label" min="0" >Plata puesta:</label>   
                             <input type="number" class="form-control" id="Guitarra_puesta" placeholder="Plata puesta">
                         </div>
                         <div class="d-grid gap-2 py-3">

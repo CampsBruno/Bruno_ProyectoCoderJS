@@ -308,7 +308,12 @@ function Muestra_Tabla(Deben,Reciben){    // crea la tabla con las personas que 
   const columnaTabla = document.getElementById("columnaTabla")
   columnaTabla.className = "Tabla_redonda"
   titulo.innerHTML = ""
-  titulo.innerHTML =`<tr > <th class="centered">Debe Pagar</th> <th class="centered"> Monto a Pagar </th>  <th class="centered">A Quien</th> <th class="centered">Estado del Pago</th>  </tr>`
+  titulo.innerHTML =`<tr > <th class="centered">Debe Pagar</th> 
+                          <th class="centered"> Monto a Pagar </th>
+                          <th class="centered">A Quien</th> 
+                          <th class="centered">A Quien</th> 
+                          <th class="centered">Estado del Pago</th>  
+                     </tr>`
   resultadosDiv.innerHTML = ""
   let indice=0
   for (let deudor in Deben) {
@@ -322,10 +327,13 @@ function Muestra_Tabla(Deben,Reciben){    // crea la tabla con las personas que 
         Reciben[pagador] -= cantidad_a_transferir
         retornar_valor.push({"Debe":deudor.toLocaleLowerCase(),"Cuanto":cantidad_a_transferir.toFixed(2),"A_Quien":pagador.toLocaleLowerCase()})
 
+       
+
         //const resultado = `${deudor.toUpperCase()} Le tiene que Girar ${cantidad_a_transferir.toFixed(2)} $ a ${pagador.toUpperCase()}`
         resultadosDiv.innerHTML += `<tr> 
                                           <th id="deudor${indice}">${deudor.toUpperCase()}</th>
                                           <th id="Cantidad${indice}">${cantidad_a_transferir.toFixed(2)}</th>
+                                          <th id="Acredor${indice}">${pagador.toUpperCase()}</th>
                                           <th id="Acredor${indice}">${pagador.toUpperCase()}</th>
                                           <th><div class="form-check form-switch">
                                           <input class="form-check-input" type="checkbox" id="Boton${indice}">
@@ -472,7 +480,7 @@ function HistorialGuardado() {
 
     Swal.fire("Inicia Sesión para poder ver tu Historial")
   }
-  console.log("funciona")
+  
   if (Secion_iniciada == true) {
     const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios"))
     for (let cuenta of usuariosGuardados) {
@@ -579,11 +587,13 @@ function HistorialGuardado() {
   }
 }
 
-//################################################    CARTEL CON LOS DETALLES en la seccion Historial
+//################################################                    CARTEL CON LOS DETALLES en la seccion Historial
 
 
 function mostrarInformacion(data, identificador) {    // crea el modal y muestra los detalles 
   id_editar = identificador  // usalo posterirormente para editar los valores de las deudas
+  let IDunicodato= data.IDGuarado
+  
   const dolar = data.PrecioDolar
   let contenidoBoton=``
   let contenido = `<p><strong>Descripción:</strong> ${data.descripcion}</p>
@@ -612,21 +622,32 @@ function mostrarInformacion(data, identificador) {    // crea el modal y muestra
       if((detalle.Historial["Falta Pagar"]).length>1){
           for(let MostrarDeuda of detalle.Historial["Falta Pagar"]){//for para imprimir deudas si tiene mas de una
 
+
             const deudaEnPesos = MostrarDeuda[1]
             const deudaEnDolares = (deudaEnPesos / dolar).toFixed(1)
             const MostrarAquienDebe =MostrarDeuda[0]
           
-            contenidoBoton+= `<div class="card border-secondary mb-3" style="max-width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title text-muted">Detalles de la Deuda</h5>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Nombre: <b>${detalle.nombre} </b> </li>
-                  <li class="list-group-item">Debe a:<b> ${MostrarAquienDebe} </b></li>
-                  <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
-                  <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
-                </ul>
+          
+            contenidoBoton+=  `<div class="card border-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title text-muted">Detalles de la Deuda</h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">Nombre: <b>${detalle.nombre} </b> </li>
+                <li class="list-group-item">Debe a:<b> ${MostrarAquienDebe} </b></li>
+                <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
+                <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
+              </ul>
+          
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" id="input-${detalle.nombre}-${MostrarAquienDebe}" placeholder="Ingrese cantidad" aria-label="Ingrese cantidad" aria-describedby="button-addon-${detalle.nombre}-${MostrarAquienDebe}" min="0" oninput="validarInput(event)">
+                <button class="btn btn-custom-color" type="button" id="button-addon-${detalle.nombre}-${MostrarAquienDebe}" onclick="ModificarDeuda(${IDunicodato},this)" >Modificar Deuda</button>
               </div>
-            </div>`
+          
+            </div>
+          </div>`   //botones para modificar los valores    ,${detalle.nombre}-${MostrarAquienDebe}
+
+
+
           } //  fin de   for para imprimir deudas si tiene mas de una
       }  // fin del if hisstorial[falta pagar]
       else if((detalle.Historial["Falta Pagar"]).length==1){    // si el largo del ["Falta Pagar"] es igual a 1  imprimi los valores
@@ -637,23 +658,50 @@ function mostrarInformacion(data, identificador) {    // crea el modal y muestra
         
    
       
-    contenidoBoton+=`<div class="card border-secondary mb-3" style="max-width: 18rem;">
+    contenidoBoton+= `<div class="card border-secondary mb-3" style="max-width: 18rem;">
     <div class="card-body">
       <h5 class="card-title text-muted">Detalles de la Deuda</h5>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Nombre:<b> ${detalle.nombre}</b></li>
-        <li class="list-group-item">Debe a:<b> ${MostrarAquienDebe}</b></li>
+        <li class="list-group-item">Nombre: <b>${detalle.nombre} </b> </li>
+        <li class="list-group-item">Debe a:<b> ${MostrarAquienDebe} </b></li>
         <li class="list-group-item">Deuda en Pesos: ${deudaEnPesos} $</li>
         <li class="list-group-item">Deuda en Dólares: ${deudaEnDolares} $</li>
       </ul>
+  
+      <div class="input-group mb-3">
+        <input type="number" class="form-control" id="input-${detalle.nombre}-${MostrarAquienDebe}" placeholder="Ingrese cantidad" aria-label="Ingrese cantidad" aria-describedby="button-addon-${detalle.nombre}-${MostrarAquienDebe}" min="0" oninput="validarInput(event)">
+        <button class="btn btn-custom-color" type="button" id="button-addon-${detalle.nombre}-${MostrarAquienDebe}" onclick="ModificarDeuda(${IDunicodato},this)" >Modificar Deuda</button>
+      </div>
+  
     </div>
-  </div>
-  `
+  </div>`
                     }// cierre del if estadoactuual<0esto es del else
                   }// cierre del if estadoactuual<0
   }  // fin del for
 
-  
+    //sacar esto, que esta para ver si funciona
+
+    contenido += "<hr>"  // Agregar un separador antes del nuevo contenido
+
+    //##################################  ACA ABAJO PONE LA FUNCION QUE ME IMPRIMA LOS DETALLES     
+
+
+    contenido += `<p>
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Historial</a>
+     </p>
+  <div class="row">
+    <div class="col">
+      <div class="collapse multi-collapse" id="multiCollapseExample1">
+        <div class="card card-body">
+          Some placeholder content for the first collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+        </div>
+      </div>
+    </div>
+
+  </div>`
+
+//  ######################################    ACA ARRIBA
+
   const modalBody = document.querySelector('#DetallesModal .modal-body');
   modalBody.innerHTML = contenido;
 
@@ -667,12 +715,219 @@ else {
 
   const myModal = new bootstrap.Modal(document.getElementById('DetallesModal'))
   myModal.show()
-  //sacar esto, que esta para ver si funciona
- 
+
+
+
+
+  DescribirDistribucion (data)
 }
 
 
 
+
+function DescribirDistribucion (data){   // paras Mostrar los detalles de los pagos ya realizados   (funcion que tosaviua no se hizo nadsa)
+  let DeudasCerradas=``
+  
+for (let detalle of data.Detalles) {
+          const estadoActual = parseFloat(detalle.EstadoActual)
+          if(estadoActual<0){   //los que deben plata
+
+                      if(detalle.Historial["Pagos Realizados"]){
+
+                      if((detalle.Historial["Pagos Realizados"]).length>0){  // corrobora que exista al menos un dato
+
+                      console.log("Entro en detalle ")
+                      console.log(detalle.Historial["Pagos Realizados"])
+                      for(let Enlalista of detalle.Historial["Pagos Realizados"]){
+
+                      //  ACA ABAJO ENTRO EN QUIENDEBE PLATA Y SE FIJA EN LOS PAGO SQUE YA HIZO A QUIN Y CUANTO, ESTO LO TENGO QUE PONER EN ALGUN DIV, SUMARLO A DeudasCerradas, DESPUES TAMBIEN SUMARLE LO DE PAGOS RECIBIDOS Y MANDAR UN RETURN CON TODOS ESOS DATOS PARA MOSTRARLO EN PANTALLA
+                        let AquienPago= Enlalista[0]
+                        let CuantoPago = Enlalista[1]
+                        console.log(`${AquienPago} Pago ${CuantoPago}`)
+
+                      }
+
+                  }}} else if(estadoActual>=0){  //a los que le tienen que pagar o ya le pagaron todo
+
+
+                    if(detalle.Historial["Pagos Recibidos"]){
+                    if((detalle.Historial["Pagos Recibidos"]).length>0){// corrobora que exista al menos un dato
+                      console.log(detalle.Historial["Pagos Recibidos"])
+                      for(let enlalista of detalle.Historial["Pagos Recibidos"]){
+                      // aca tengo que agregar los datos a la variable deudacerrada
+                      let QuienMePago=enlalista[0]
+                      let CuantoMPago = enlalista[1]
+}
+                    }}
+
+
+          }
+
+
+
+  //iterar solo entre ["Pagos Recibidos"] y ["Pagos Realizados"] ya que los de falta estan en el historial
+ 
+
+  
+
+}
+//Return de DeudasCerradas que deberia contener toda la informacion, para luego imprimirla
+}   // fin de DescribirDistribucion
+
+
+
+
+
+function ModificarDeuda(Historial_Datos, elemento){  // modifica la deuda almacenada en local
+let idBoron = elemento.id
+let  particion= idBoron.split("-")
+let PersonaQuePaga = particion[2]
+let QuienRecibe = particion[3]
+let cantidadSaldada= parseFloat(document.getElementById(`input-${PersonaQuePaga}-${QuienRecibe}`).value)
+let PagoHecho=[]
+
+let diccionarioDetalles = parseInt(Historial_Datos)
+
+
+let HistorailaModificar= JSON.parse(localStorage.getItem("almacenaje"))
+//let idUsuarioLogueado = HistorailaModificar[diccionarioDetalles]["id"]
+
+for(let DataaEditar of datosdeSesionAlmacenados ){  //busco entre todos los datos guardados
+  
+if(parseInt(DataaEditar.IDGuarado) == diccionarioDetalles){  //si el id del dato guardado coincide con el id de la deuda que estoy tratando de saldar ingresa
+ 
+  for (let deudorPagando of DataaEditar.Detalles ){                    //Entro en cada Detalle 
+
+                if (deudorPagando.nombre == PersonaQuePaga){  // Ingreso al detalle de la persona que esta pagando la deuda, para realizar las modificaciones pertinenetes
+                        if(isNaN(cantidadSaldada)== false){ 
+
+
+                          // hay que modificar lo de abajo, si la plata uqe escribi es mayor, a lo que esta en la lista de falta, que lo igual a eso, por que si le debe plata a otros aca abajo lo anulo
+                         // deudorPagando.EstadoActual = parseFloat(deudorPagando.EstadoActual) + cantidadSaldada  
+                          //deudorPagando.EstadoActual = deudorPagando.EstadoActual.toFixed(1)
+                           // if(deudorPagando.EstadoActual>0){deudorPagando.EstadoActual='0.0'}
+                            //console.log( deudorPagando.EstadoActual) 
+
+                            //modificacion
+                            //if(Math.abs(deudorPagando.EstadoActual)<cantidadSaldada){}
+                  
+
+                        if((deudorPagando.Historial["Falta Pagar"]).length>0){
+                            for(let listaDeudass of deudorPagando.Historial["Falta Pagar"]){
+
+                                    if(listaDeudass[0]== QuienRecibe){
+                                      
+
+                                      if(parseFloat(listaDeudass[1])<cantidadSaldada){ //si lo que debe es menor al numero que ingreso
+                                     
+                                        deudorPagando.EstadoActual = parseFloat(deudorPagando.EstadoActual) + parseFloat(listaDeudass[1])  
+                                        deudorPagando.EstadoActual = deudorPagando.EstadoActual.toFixed(1)
+                                        
+                                      } else if (parseFloat(listaDeudass[1])>cantidadSaldada){
+                                        
+                                        deudorPagando.EstadoActual = parseFloat(deudorPagando.EstadoActual) + cantidadSaldada  
+                                        deudorPagando.EstadoActual = deudorPagando.EstadoActual.toFixed(1)
+                                       
+                                      }
+
+
+
+                                      listaDeudass[1]= (listaDeudass[1]-cantidadSaldada).toFixed(2)
+                                      listaDeudass[1]= parseFloat( listaDeudass[1])   
+                                    
+
+
+
+                                      if (listaDeudass[1]<= 0){
+                                        const index = deudorPagando.Historial["Falta Pagar"].indexOf(listaDeudass)  // te devuelve el indice, pero si no encuentra nada devuelve -1
+
+                                         //la tengo que agregar ahora a pagos Realizados 
+                                         let platapagada= parseFloat((cantidadSaldada + parseFloat(listaDeudass[1])).toFixed(2))
+                                         PagoHecho =[QuienRecibe,platapagada]
+                                         deudorPagando.Historial["Pagos Realizados"].push(PagoHecho)
+
+                                        if(index>-1){
+                                        deudorPagando.Historial["Falta Pagar"].splice(index,1)}  // aca ya deveriamos haber eliminado la deuda de la lista de deudorPagando.Historial["Falta Pagar"]
+
+                                       
+
+                                          
+                                      } else if (listaDeudass[1] > 0){
+                                        
+                                      PagoHecho= [QuienRecibe,cantidadSaldada]
+                                         //la tengo que agregar ahora a pagos Realizados 
+                                         deudorPagando.Historial["Pagos Realizados"].push(PagoHecho)
+                                      }
+                                      RecibioPago(DataaEditar,QuienRecibe,PersonaQuePaga,PagoHecho)
+                            } // cierre de  if  if(listaDeudass[0]== QuienRecibe)
+
+                          }// fin del listadeuda
+                            
+                        }// legth <0
+
+
+
+                        
+
+
+                      }// fin del if nana ==false (si pusieron un numero dse ejecuta todo sino que no se ejecute nada)
+              }
+}// fin del for que busca deudar
+
+
+//console.log(DataaEditar.Detalles)
+//console.log(PersonaQuePaga,QuienRecibe)
+
+}//fin del if  (parseInt(DataaEditar.IDGuarado) == diccionarioDetalles)
+
+}// fin del for
+
+// los comparo con la lista que es vqariable global (datosdeSesionAlmacenados)
+
+}// fin de modificar la deuda
+
+function RecibioPago(diccionario,Nombre1,nombre2,Pago){   // tengo que poner los pagos recibidos, los que falta recibir y modificar el diccionario, luego devovlerlo 
+let HistorialCompleto_Deuda = diccionario
+let NombreRecibe = Nombre1
+let NombrePAGO= nombre2
+let PagoAgendado = Pago
+
+
+for(let data of HistorialCompleto_Deuda.Detalles){
+  if (data.nombre ==  NombreRecibe){   // entra en el detalle de la persona que recibio 
+         data.EstadoActual = (parseFloat(data.EstadoActual) - parseFloat(PagoAgendado[1])).toFixed(1)
+        let pagoAdjuntar=[NombrePAGO,parseFloat(PagoAgendado[1])]
+        data.Historial["Pagos Recibidos"].push(pagoAdjuntar)
+
+        for( let Faltantes of data.Historial["Faltas Recibir"]){// itera en falta recibir 
+                if(Faltantes[0]== NombrePAGO){
+
+                            
+                            let RestaFaltante = parseFloat(Faltantes[1]) - parseFloat(PagoAgendado[1])
+                            if (RestaFaltante<=0){
+                                    
+                                    const index = data.Historial["Faltas Recibir"].findIndex(item => item[0] === NombrePAGO)
+                                    
+                                    if (index > -1) {
+                                      
+                                      data.Historial["Faltas Recibir"].splice(index, 1)
+                                    }
+                            
+
+                            }else if (RestaFaltante>0){
+                                      Faltantes[1]= parseFloat(RestaFaltante)
+                                
+                              }
+
+                        }  // fin if 
+
+            }
+          }
+
+          
+        }//fin for de data
+console.log(HistorialCompleto_Deuda)
+}
 
 
 //#######################################################################################################################################################################################################################################
@@ -792,14 +1047,19 @@ function ExportarDatos(lista, ID_Usuario,descripcion,Gasto_Cada_Persona,logoGuar
     const dia = fechaActual.getDate()
     const mes = fechaActual.getMonth() + 1
     const año = fechaActual.getFullYear()
+    const hora = fechaActual.getHours()
+    const minuto = fechaActual.getMinutes()
+    const segundo = fechaActual.getSeconds()
     const fechaFormateada = `${dia}/${mes}/${año}`
+    const fechaIDguardado=`${dia}${mes}${año}${hora}${minuto}${segundo}`
     const agregar= JSON.parse(localStorage.getItem("almacenaje"))
     let datos = {"id":ID_Usuario,
                   "descripcion":descripcion,
                   "Categoria": logoGuardar,   // esta poniendo cosas raras, ver como cambiar eso
                 "fecha":fechaFormateada,
                 "por_Persona":Gasto_Cada_Persona,
-                "Detalles":lista}
+                "Detalles":lista,
+                "IDGuarado":fechaIDguardado}
 
     // envio Los datos de mis diccionarios para que almacene los valores, junto con el precio del dolar del momento
     obtenerPrecio(datos,agregar)}
@@ -807,6 +1067,16 @@ function ExportarDatos(lista, ID_Usuario,descripcion,Gasto_Cada_Persona,logoGuar
 }
 
 
+
+
+function validarInput(event) {    //  no permite que el imput en Historial/Detalles sea negativo
+ 
+  const input = event.target;
+  if (input.value < 0) {
+    input.value = 0;
+  }
+}
+//  ###############################################################################################################################################
 
 
 
